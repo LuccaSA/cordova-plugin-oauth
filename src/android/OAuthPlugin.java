@@ -71,42 +71,6 @@ public class OAuthPlugin extends CordovaPlugin {
         return false;
     }
 
-
-
-    /**
-     * Called when the activity receives a new intent.
-     *
-     * We use this method to intercept the OAuth callback URI and dispatch a
-     * message to the WebView.
-     */
-    @Override
-    public void onNewIntent(Intent intent) {
-        if (intent == null || !intent.getAction().equals(Intent.ACTION_VIEW)) {
-            return;
-        }
-
-        final Uri uri = intent.getData();
-        String callbackHost = preferences.getString("oauthhostname", "oauth_callback");
-
-        if (uri.getHost().equals(callbackHost)) {
-            LOG.i(TAG, "OAuth called back with parameters.");
-
-            try {
-                JSONObject jsobj = new JSONObject();
-                jsobj.put("oauth_callback_url", uri.toString());
-
-                for (String queryKey : uri.getQueryParameterNames()) {
-                    jsobj.put(queryKey, uri.getQueryParameter(queryKey));
-                }
-
-                dispatchOAuthMessage(jsobj.toString());
-            } catch (JSONException e) {
-                LOG.e(TAG, "JSON Serialization failed");
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * Called when the activity will start interacting with the user.
      *
